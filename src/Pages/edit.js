@@ -59,8 +59,11 @@ const Edit = () => {
       validationErrors.name = "Name is required";
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!inputs.email || !inputs.email.trim()) {
       validationErrors.email = "Email is required";
+    } else if (!emailRegex.test(inputs.email)) {
+      validationErrors.email = "Valid Email is required";
     }
     // set errors if errors
     setErrors(validationErrors);
