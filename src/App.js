@@ -5,6 +5,8 @@ import Home from "./Pages/home";
 import Create from "./Pages/create";
 import Edit from "./Pages/edit";
 import View from "./Pages/view";
+import Login from "./Pages/login";
+import PrivateRoutes from "./utils/PrivateRoutes";
 
 function App() {
   return (
@@ -12,8 +14,13 @@ function App() {
       <nav className="navbar navbar-expand navbar-dark bg-dark">
         <div className="navbar-nav mr-auto">
           <li className="nav-item">
-            <Link to={"/"} className="nav-link">
-              Home
+            <Link to={"/login"} className="nav-link">
+              Login
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to={"/list"} className="nav-link">
+              List
             </Link>
           </li>
 
@@ -26,10 +33,14 @@ function App() {
       </nav>
       <div className="container">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/create" element={<Create />} />
-          <Route path="/edit/:id" element={<Edit />} />
-          <Route path="/view/:id" element={<View />} />
+
+          <Route element={<PrivateRoutes />}>
+            <Route path="/list" element={<Home />} />
+            <Route path="/edit/:id" element={<Edit />} />
+            <Route path="/view/:id" element={<View />} />
+          </Route>
         </Routes>
       </div>
     </div>

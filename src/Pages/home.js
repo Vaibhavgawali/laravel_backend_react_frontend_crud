@@ -10,16 +10,30 @@ const Home = () => {
     fetchAllUsers();
   }, []);
 
+  const token = localStorage.getItem("token");
+
   const fetchAllUsers = () => {
-    http.get("/users").then((res) => {
-      setUsers(res.data.users);
-    });
+    http
+      .get("/users", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setUsers(res.data.users);
+      });
   };
 
   const deleteUser = (id) => {
-    http.delete("/users/" + id).then((res) => {
-      fetchAllUsers();
-    });
+    http
+      .delete("/users/" + id, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        fetchAllUsers();
+      });
   };
 
   return (

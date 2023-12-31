@@ -9,14 +9,25 @@ const Edit = () => {
 
   const { id } = useParams();
   useEffect(() => {
-    http.get("/users/" + id).then((res) => {
-      console.log(res.data);
-      setInputs({
-        name: res.data.user.name,
-        email: res.data.user.email,
-      });
-    });
+    fetchUser(id);
   }, []);
+
+  const fetchUser = (id) => {
+    const token = localStorage.getItem("token");
+    http
+      .get("/users/" + id, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setInputs({
+          name: res.data.user.name,
+          email: res.data.user.email,
+        });
+      });
+  };
 
   const handleChange = (e) => {
     const name = e.target.name;

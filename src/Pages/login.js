@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import http from "../http";
 
-const Create = () => {
+const Login = () => {
   const navigate = useNavigate();
   const [inputs, setInputs] = useState({});
 
@@ -13,27 +13,20 @@ const Create = () => {
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
-  const submitForm = () => {
-    http.post("/register", inputs).then((res) => {
-      navigate("/login");
+  const authenticateUser = () => {
+    http.post("/login", inputs).then((res) => {
+      const token = res.data.token;
+      localStorage.setItem("token", token);
+      navigate("/list");
     });
   };
 
   return (
     <div>
-      <h1>New User</h1>
+      <h1>Login User</h1>
       <div className="row">
         <div className="col-sm-6">
           <div className="card p-4">
-            <label>Name</label>
-            <input
-              type="text"
-              name="name"
-              className="form-control mb-2"
-              value={inputs.name}
-              onChange={handleChange}
-            />
-
             <label>Email</label>
             <input
               type="email"
@@ -52,21 +45,12 @@ const Create = () => {
               onChange={handleChange}
             />
 
-            <label>Confirm Password</label>
-            <input
-              type="password"
-              name="password_confirmation"
-              className="form-control mb-2"
-              value={inputs.password_confirmation}
-              onChange={handleChange}
-            />
-
             <button
               type="submit"
               className="btn btn-info mt-2"
-              onClick={submitForm}
+              onClick={authenticateUser}
             >
-              Create
+              Login
             </button>
           </div>
         </div>
@@ -74,5 +58,4 @@ const Create = () => {
     </div>
   );
 };
-
-export default Create;
+export default Login;
