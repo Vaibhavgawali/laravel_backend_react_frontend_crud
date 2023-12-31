@@ -17,9 +17,15 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
-        $request->session()->regenerate();
+        // $request->session()->regenerate();
 
-        return response()->noContent();
+        $user=$request->user();
+        if($user->tokens()){
+            $user->tokens()->delete();
+        }
+        $token=$user->createToken('laravel_react_crud');
+
+        return Response(['token'=>$token->plainTextToken,'message'=>'User logged successfully'],200);
     }
 
     /**
