@@ -6,6 +6,7 @@ import http from "../http";
 const Login = () => {
   const navigate = useNavigate();
   const [inputs, setInputs] = useState({});
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -13,12 +14,28 @@ const Login = () => {
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
-  const authenticateUser = () => {
-    http.post("/login", inputs).then((res) => {
-      const token = res.data.token;
-      localStorage.setItem("token", token);
-      navigate("/list");
-    });
+  const authenticateUser = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      http.post("/login", inputs).then((res) => {
+        const token = res.data.token;
+        localStorage.setItem("token", token);
+        navigate("/list");
+      });
+    }
+  };
+
+  const validateForm = () => {
+    const validationErrors = {};
+    if (!inputs.email || !inputs.email.trim()) {
+      validationErrors.email = "Email is required";
+    }
+    if (!inputs.password || !inputs.password.trim()) {
+      validationErrors.password = "Password is required";
+    }
+    setErrors(validationErrors);
+
+    return Object.keys(validationErrors).length === 0;
   };
 
   return (
@@ -35,7 +52,9 @@ const Login = () => {
               value={inputs.email}
               onChange={handleChange}
             />
-
+            {errors.email && (
+              <span className="text-danger">{errors.email}</span>
+            )}
             <label>Password</label>
             <input
               type="password"
@@ -44,7 +63,9 @@ const Login = () => {
               value={inputs.password}
               onChange={handleChange}
             />
-
+            {errors.password && (
+              <span className="text-danger">{errors.password}</span>
+            )}
             <button
               type="submit"
               className="btn btn-info mt-2"

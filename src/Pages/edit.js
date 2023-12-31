@@ -6,14 +6,16 @@ import http from "../http";
 const Edit = () => {
   const navigate = useNavigate();
   const [inputs, setInputs] = useState({});
+  const [errors, setErrors] = useState({});
 
   const { id } = useParams();
   useEffect(() => {
     fetchUser(id);
   }, []);
 
+  const token = localStorage.getItem("token");
+
   const fetchUser = (id) => {
-    const token = localStorage.getItem("token");
     http
       .get("/users/" + id, {
         headers: {
@@ -35,10 +37,35 @@ const Edit = () => {
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
-  const submitForm = () => {
-    http.patch("/users/" + id, inputs).then((res) => {
-      navigate("/");
-    });
+  const submitForm = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      http
+        .patch("/users/" + id, inputs, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          navigate("/list");
+        });
+    }
+  };
+
+  const validateForm = () => {
+    const validationErrors = {};
+
+    if (!inputs.name || !inputs.name.trim()) {
+      validationErrors.name = "Name is required";
+    }
+
+    if (!inputs.email || !inputs.email.trim()) {
+      validationErrors.email = "Email is required";
+    }
+    // set errors if errors
+    setErrors(validationErrors);
+    // returns true if not errors
+    return Object.keys(validationErrors).length === 0;
   };
 
   return (
@@ -55,7 +82,7 @@ const Edit = () => {
               value={inputs.name}
               onChange={handleChange}
             />
-
+            {errors.name && <span className="text-danger">{errors.name}</span>}
             <label>Email</label>
             <input
               type="email"
@@ -64,7 +91,9 @@ const Edit = () => {
               value={inputs.email}
               onChange={handleChange}
             />
-
+            {errors.email && (
+              <span className="text-danger">{errors.email}</span>
+            )}
             <button
               type="submit"
               className="btn btn-info mt-2"

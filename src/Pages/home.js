@@ -1,9 +1,11 @@
 import React from "react";
 import http from "../http";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const Home = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -36,9 +38,26 @@ const Home = () => {
       });
   };
 
+  const logout = () => {
+    http
+      .post("/logout", null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log("first");
+        localStorage.removeItem("token");
+        navigate("/login");
+      });
+  };
+
   return (
     <div>
-      <h1>Users Listing...</h1>
+      <h1>Users Listing...</h1>{" "}
+      <button className="btn btn-danger" onClick={logout}>
+        Logout
+      </button>
       <table className="table">
         <thead>
           <tr>
