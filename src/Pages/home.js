@@ -1,11 +1,9 @@
 import React from "react";
 import http from "../http";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const Home = () => {
-  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -27,37 +25,23 @@ const Home = () => {
   };
 
   const deleteUser = (id) => {
-    http
-      .delete("/users/" + id, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        fetchAllUsers();
-      });
-  };
-
-  const logout = () => {
-    http
-      .post("/logout", null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        console.log("first");
-        localStorage.removeItem("token");
-        navigate("/login");
-      });
+    const confirmDelete = window.confirm("Are sure want to delete user ?");
+    if (confirmDelete) {
+      http
+        .delete("/users/" + id, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          fetchAllUsers();
+        });
+    }
   };
 
   return (
     <div>
       <h1>Users Listing...</h1>{" "}
-      <button className="btn btn-danger" onClick={logout}>
-        Logout
-      </button>
       <table className="table">
         <thead>
           <tr>
