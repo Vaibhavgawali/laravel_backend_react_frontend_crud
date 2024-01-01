@@ -23,7 +23,6 @@ const Edit = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         setInputs({
           name: res.data.user.name,
           email: res.data.user.email,
@@ -32,8 +31,7 @@ const Edit = () => {
   };
 
   const handleChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
+    const { name, value } = e.target;
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
@@ -48,6 +46,10 @@ const Edit = () => {
         })
         .then((res) => {
           navigate("/list");
+        })
+        .catch((error) => {
+          const errors = error.response.data.errors;
+          setErrors(errors);
         });
     }
   };

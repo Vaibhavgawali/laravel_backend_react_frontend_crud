@@ -17,9 +17,15 @@ const Create = () => {
     e.preventDefault();
 
     if (validateForm()) {
-      http.post("/register", inputs).then((res) => {
-        navigate("/login");
-      });
+      http
+        .post("/register", inputs)
+        .then((res) => {
+          navigate("/login");
+        })
+        .catch((error) => {
+          const errors = error.response.data.errors;
+          setErrors(errors);
+        });
     }
   };
 
