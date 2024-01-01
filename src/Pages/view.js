@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import http from "../http";
 
 const View = () => {
+  const navigate = useNavigate();
   const [inputs, setInputs] = useState({});
 
   const { id } = useParams();
@@ -21,10 +22,19 @@ const View = () => {
       })
       .then((res) => {
         console.log(res.data);
-        setInputs({
-          name: res.data.user.name,
-          email: res.data.user.email,
-        });
+        try {
+          setInputs({
+            name: res.data.user.name,
+            email: res.data.user.email,
+          });
+        } catch (error) {
+          console.log("Error while setting inputs", error);
+        }
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
+          navigate("/list");
+        }
       });
   };
 

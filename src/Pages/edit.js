@@ -23,10 +23,19 @@ const Edit = () => {
         },
       })
       .then((res) => {
-        setInputs({
-          name: res.data.user.name,
-          email: res.data.user.email,
-        });
+        try {
+          setInputs({
+            name: res.data.user.name,
+            email: res.data.user.email,
+          });
+        } catch (error) {
+          console.error("Error setting inputs:", error);
+        }
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 404) {
+          navigate("/list");
+        }
       });
   };
 
