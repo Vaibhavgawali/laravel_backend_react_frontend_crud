@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\User;
 use Auth;
+use Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserController extends Controller
 {
@@ -44,8 +47,16 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        $user=User::find($id);
-        return Response(['message'=>"User fetched successfully",'user'=>$user],200);
+        try {
+            $user = User::findOrFail($id);
+            return response(['message' => "User fetched successfully", 'user' => $user], 200);
+        } catch (ModelNotFoundException $e) {
+            // Catch the exception and return a custom response for a user not found
+            return response(['message' => "User not found"], 404);
+        } catch (NotFoundHttpException $e) {
+            // If somehow the exception is a NotFoundHttpException, handle it here
+            return response(['message' => "User not found"], 404);
+        }
     }
 
     /**
@@ -61,10 +72,24 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $user=User::find($id);
-        $user->update($request->all());
+        $validator=Validator::make($request->all(),[
+            'name' => ['required', 'string', 'max:255'],
+            'email' => 'required|email|unique:users,email,'.$id 
+        ]);
 
-        return Response(['message'=>"User updated successfully"],200);
+        if ($validator->fails()) {
+            return Response(['errors' => $validator->errors()], 422);
+        }
+
+        try {
+            $user = User::findOrFail($id);
+            $user->update($request->all());
+            return Response(['message'=>"User updated successfully"],200);
+        } catch (ModelNotFoundException $e) {
+            return response(['message' => "User not found"], 404);
+        } catch (NotFoundHttpException $e) {
+            return response(['message' => "User not found"], 404);
+        }
     }
 
     /**
@@ -72,7 +97,18 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        $user=User::find($id)->delete();
-        return Response(['message'=>"User deleted successfully"],200);
+        try {
+            $user = User::findOrFail($id);
+            $isDeleted=$user->delete();
+            if($isDeleted){
+                return Response(['message'=>"User deleted successfully"],200);
+            }
+            return Response(['message'=>"Something went wrong"],500);
+        } catch (ModelNotFoundException $e) {
+            return response(['message' => "User not found"], 404);
+        } catch (NotFoundHttpException $e) {
+            return response(['message' => "User not found"], 404);
+        }
+ 
     }
 }
