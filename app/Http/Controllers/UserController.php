@@ -15,10 +15,16 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index():Response
+    public function index(Request $request):Response
     {
-        $users=User::orderByDesc('id')->get();
-        return Response(['status'=>true,'users'=>$users]);
+        $search = $request->get('search');
+        $users=User::orderByDesc('id');
+        if($search){
+            $users=$users->where('name', 'like', "%$search%");
+        }
+        $users=$users->paginate(10);
+
+        return Response(['status'=>true,'users'=>$users],200);
     }
 
     /**
