@@ -73,6 +73,12 @@ const Login = () => {
             >
               Login
             </button>
+            <p>
+              Don't have Logout ?
+              <a href="/register">
+                <button className="btn btn-secondary">Register</button>
+              </a>
+            </p>
           </div>
         </div>
       </div>

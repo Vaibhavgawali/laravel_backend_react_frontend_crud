@@ -2,7 +2,8 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import Home from "./Pages/home";
-import Create from "./Pages/create";
+import UserList from "./Pages/userList";
+import Register from "./Pages/register";
 import Edit from "./Pages/edit";
 import View from "./Pages/view";
 import Login from "./Pages/login";
@@ -41,15 +42,15 @@ function App() {
             </Link>
           </li>
           <li className="nav-item">
-            <Link to={"/create"} className="nav-link">
-              Create
+            <Link to={"/register"} className="nav-link">
+              Register
             </Link>
           </li>
 
           {isLogged && (
             <li className="nav-item">
               <Link to={"/list"} className="nav-link">
-                List
+                Users List
               </Link>
             </li>
           )}
@@ -71,11 +72,12 @@ function App() {
       </nav>
       <div className="container">
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/create" element={<Create />} />
+          <Route path="/register" element={<Register />} />
 
           <Route element={<PrivateRoutes />}>
-            <Route path="/list" element={<Home />} />
+            <Route path="/list" element={<UserList />} />
             <Route path="/edit/:id" element={<Edit />} />
             <Route path="/view/:id" element={<View />} />
           </Route>

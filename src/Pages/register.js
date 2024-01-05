@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import http from "../http";
 
-const Create = () => {
+const Register = () => {
   const navigate = useNavigate();
   const [inputs, setInputs] = useState({});
   const [errors, setErrors] = useState({});
@@ -121,8 +121,14 @@ const Create = () => {
               className="btn btn-info mt-2"
               onClick={submitForm}
             >
-              Create
+              Register
             </button>
+            <p>
+              Already have account{" "}
+              <a href="/login">
+                <button className="btn btn-secondary">Login</button>
+              </a>
+            </p>
           </div>
         </div>
       </div>
@@ -130,4 +136,4 @@ const Create = () => {
   );
 };
 
-export default Create;
+export default Register;
