@@ -7,8 +7,11 @@ import Register from "./Pages/register";
 import Edit from "./Pages/edit";
 import View from "./Pages/view";
 import Login from "./Pages/login";
+import Forgot from "./Pages/forgot";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import http from "./http";
+import ResetPasswordEmail from "./Pages/resetPasswordEmail";
+import ResetPassword from "./Pages/resetPassword";
 
 function App() {
   const navigate = useNavigate();
@@ -62,11 +65,18 @@ function App() {
               </Link>
             </li>
           ) : (
-            <li className="nav-item">
-              <Link onClick={logoutUser} className="nav-link">
-                Logout
-              </Link>
-            </li>
+            <>
+              <li className="nav-item">
+                <Link onClick={logoutUser} className="nav-link">
+                  Logout
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to={"/reset-password/"} className="nav-link">
+                  Reset Password
+                </Link>
+              </li>
+            </>
           )}
         </div>
       </nav>
@@ -75,11 +85,14 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<Forgot />} />
+          <Route path="/password-reset/:id" element={<ResetPasswordEmail />} />
 
           <Route element={<PrivateRoutes />}>
             <Route path="/list" element={<UserList />} />
             <Route path="/edit/:id" element={<Edit />} />
             <Route path="/view/:id" element={<View />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
           </Route>
         </Routes>
       </div>

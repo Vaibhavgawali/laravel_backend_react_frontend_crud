@@ -79,6 +79,9 @@ const Login = () => {
                 <button className="btn btn-secondary">Register</button>
               </a>
             </p>
+            <a href="/forgot-password">
+              <button className="btn btn-secondary">Forgot Password</button>
+            </a>
           </div>
         </div>
       </div>
